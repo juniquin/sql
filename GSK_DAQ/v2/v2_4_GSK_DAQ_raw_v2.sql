@@ -29,7 +29,7 @@ select *
 from 
 rate.GSK_KN_AIR_OCEAN_MASTER_RATES
 WHERE
-trax_filename like '%v64%'
+trax_filename like '%v04%'
 --and rate_code = 'K52914'
 
 
