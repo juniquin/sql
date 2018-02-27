@@ -1,11 +1,11 @@
 
 /*
-server: ENVIDBSNAPSHOTSSQL.TRAXTECH.COM
-database: Multiclient01_Snap_Test
+server: globalSql.traxtech.com
+database: CentralConfigRepl
 table: rate.GSK_KN_AIR_OCEAN_MASTER_RATES
 */
 
-Use Multiclient01_Snap_Test
+Use CentralConfigRepl
 
 
 -- @mode, @cat, @accgroup, @ratecode, @displaynotpopulated

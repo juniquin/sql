@@ -8,7 +8,7 @@ table: rate.GSK_KN_AIR_OCEAN_MASTER_RATES
 Use CentralConfigRepl
 
 
-select count(*) from rate.GSK_KN_AIR_OCEAN_MASTER_RATES with (nolock)
+select count(*) as [Count] from rate.GSK_KN_AIR_OCEAN_MASTER_RATES with (nolock)
 
 
 select distinct trax_filename, count(*) as [count]
@@ -29,7 +29,7 @@ select *
 from 
 rate.GSK_KN_AIR_OCEAN_MASTER_RATES
 WHERE
-trax_filename like '%v64%'
+trax_filename like '%v04%'
 --and rate_code = 'K52914'
 
 
