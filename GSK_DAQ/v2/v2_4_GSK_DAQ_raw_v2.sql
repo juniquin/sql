@@ -8,7 +8,7 @@ table: rate.GSK_KN_AIR_OCEAN_MASTER_RATES
 Use CentralConfigRepl
 
 
-select count(*) from rate.GSK_KN_AIR_OCEAN_MASTER_RATES with (nolock)
+select count(*) as [Count] from rate.GSK_KN_AIR_OCEAN_MASTER_RATES with (nolock)
 
 
 select distinct trax_filename, count(*) as [count]
