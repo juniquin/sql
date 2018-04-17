@@ -21,7 +21,7 @@ exec rate.usp_GSK_KN_SourceRates_v2
 */
 
 
-exec rate.usp_GSK_KN_SourceRates_v2 'air', 'freight', '', 'K51123', 1
+exec rate.usp_GSK_KN_SourceRates_v2 'Ocean LCL', 'freight', '', 'K59304', 1
 
 
 
