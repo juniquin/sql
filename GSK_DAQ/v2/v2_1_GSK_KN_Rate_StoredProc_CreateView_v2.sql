@@ -14,7 +14,7 @@ table: rate.GSK_KN_AIR_OCEAN_MASTER_RATES
 --select * from rate.vw_GSK_KN_SourceRates_Temp_v2
 
 
-ALTER PROCEDURE rate.usp_GSK_KN_Rates_Create_View_v2
+CREATE PROCEDURE rate.usp_GSK_KN_Rates_Create_View_v2
 	(
 	 @mode nvarchar(50),		-- 'Air', 'Ocean FCL', 'Ocean LCL'
 	 @cat nvarchar(50),			-- 'Freight', 'Accessorial'rate.vw_GSK_KN_SourceRates_Temp_v2
