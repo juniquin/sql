@@ -14,7 +14,7 @@ table: rate.GSK_KN_AIR_OCEAN_MASTER_RATES
 --select * from rate.vw_GSK_KN_SourceRates_Temp_v2
 
 
-CREATE PROCEDURE rate.usp_GSK_KN_Rates_Create_View_v2
+ALTER PROCEDURE rate.usp_GSK_KN_Rates_Create_View_v2
 	(
 	 @mode nvarchar(50),		-- 'Air', 'Ocean FCL', 'Ocean LCL'
 	 @cat nvarchar(50),			-- 'Freight', 'Accessorial'rate.vw_GSK_KN_SourceRates_Temp_v2
@@ -42,7 +42,9 @@ set @query = N'CREATE VIEW rate.vw_GSK_KN_SourceRates_Temp_v2
 	[version] = 
 			case when [trax_filename] like ''%2017%''
 				then replace(substring([trax_filename], charindex(''2017'', [trax_filename], 1), len([trax_filename])-(charindex(''2017'', [trax_filename], 1)-1)), ''.xlsx'', '''')
-				 when [trax_filename] not like ''%2017%''
+				 when [trax_filename] like ''%2018%''
+				then replace(substring([trax_filename], charindex(''2018'', [trax_filename], 1), len([trax_filename])-(charindex(''2018'', [trax_filename], 1)-1)), ''.xlsx'', '''')
+				 when [trax_filename] not like ''%2017%'' and [trax_filename] not like ''%2018%''
 				then concat(''2016'', replace(substring([trax_filename], charindex('' V'', [trax_filename], 1), len([trax_filename])-(charindex(''Elavon'', [trax_filename], 1)-1)), ''.xlsx'', ''''))
 			end,
 	valid_from,
