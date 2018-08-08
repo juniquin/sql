@@ -132,8 +132,9 @@ set @query = @query + N'from rate.GSK_KN_AIR_OCEAN_MASTER_RATES with (nolock)
 		--and rate_code in (''K25279'',''K25283'',''K50066'',''K50184'',''K50401'',''K50419'')
 		--and rate_code in (''K54486'',''K55524'',''K55525'',''K55526'',''K55527'',''K54324'')
 		--and rate_code = ''K56537''
+		and trax_created >= ''2018-08-08''			
 	'
-
+		-- as dicussed in AC-9195; replace everything; make the file on this date (2018-08-08) as the start date of the GRT update
 
 if @ratecode is not NULL and @ratecode <> ''
 	begin
