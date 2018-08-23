@@ -14,6 +14,7 @@ table: rate.GSK_KN_AIR_OCEAN_MASTER_RATES
 --select * from rate.vw_GSK_KN_SourceRates_Temp_v2
 
 
+
 ALTER PROCEDURE rate.usp_GSK_KN_Rates_Create_View_v2
 	(
 	 @mode nvarchar(50),		-- 'Air', 'Ocean FCL', 'Ocean LCL'
@@ -129,12 +130,12 @@ if(@cat = 'Accessorial' and @accgroup = 'Others2')
 set @query = @query + N'from rate.GSK_KN_AIR_OCEAN_MASTER_RATES with (nolock)
 	where
 		mode = '''+@mode+'''
-		--and rate_code in (''K25279'',''K25283'',''K50066'',''K50184'',''K50401'',''K50419'')
-		--and rate_code in (''K54486'',''K55524'',''K55525'',''K55526'',''K55527'',''K54324'')
-		--and rate_code = ''K56537''
-		and trax_created >= ''2018-08-08''			
-	'
+		--and rate_code in (''K50150'',''K51723'',''K59632'')
+		and NOT (status = ''INACTIVE'' and trax_created >= ''2018-08-08'' )
+ 	'
 		-- as dicussed in AC-9195; replace everything; make the file on this date (2018-08-08) as the start date of the GRT update
+		-- UPDATED instruction in AC-9195; Take the old (archived) Trax Rate Card and set all Expiry Dates to latest 07/31/2018 (so basically anything that was set to expire in December now expires in July)
+			-- Add all ACTIVE rates from v169 with effective date 08/01/2018; disregard other rows that is not 'ACTIVE' status. 
 
 if @ratecode is not NULL and @ratecode <> ''
 	begin

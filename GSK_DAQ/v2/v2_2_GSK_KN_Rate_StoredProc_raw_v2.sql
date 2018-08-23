@@ -37,17 +37,61 @@ declare @query nvarchar(max)
 set @query = N'EXEC rate.usp_GSK_KN_Rates_Create_View_v2 '''+@mode+''', '''+@cat+''', '''+@accgroup+''', '''+@ratecode+''' '
 exec sp_executesql @query
 
+
+if object_id('tempdb..#newratesRaw') is not null drop table #newratesRaw
+select * into #newratesRaw from rate.vw_GSK_KN_SourceRates_Temp_v2
+
+--select * from #newratesRaw
+
+
+
+-------[AC-9195: Added version_year, version_sequence, version_num, effective date update]---------
+---------------------------------------------------------------------------------------------------
+
+if object_id('tempdb..#newratesVersion') is not null drop table #newratesVersion
+select
+[version_year] = cast(left([version], 4) as int),
+[version_sequence] = cast(substring([version], charindex(' ', [version], 1) + 2, charindex(' ', reverse([version]), 1) - 2) as int),
+	--[len] = len([version]),
+	--[charindex] = charindex(' ', [version], 1) + 2,
+	--[reverse] = reverse([version]),
+	--[reversechar] = charindex(' ', reverse([version]), 1) - 2,
+* into #newratesVersion 
+from #newratesRaw
+
+--select * from #newratesVersion
+
+
 if object_id('tempdb..#newrates') is not null drop table #newrates
-select * into #newrates from rate.vw_GSK_KN_SourceRates_Temp_v2
---select count(*) as [rowcount] from #newrates
---select * from rate.vw_GSK_KN_SourceRates_Temp
+select
+[version_num] = ([version_year] * 1000) + [version_sequence],
+* into #newrates
+from #newratesVersion
+
+
+--update valid_from
+update	#newrates
+set valid_from = case	when [version_num] = 2018169 and try_parse(valid_to as date using 'en-gb') > '2018-08-01'
+							then '2018-08-01'
+						else valid_from
+						end
+
+--update valid_to
+update	#newrates
+set valid_to = case	when [version_num] < 2018169 and try_parse(valid_to as date using 'en-gb') >= '2018-08-01'
+							then '2018-07-31'
+						else valid_to
+						end
 
 --select * from #newrates
---order by rate_code, [version] desc, valid_from desc, valid_to, orig_city
+--order by  
+	--rate_code, [version_year] desc, [version_sequence] desc, [version] desc, valid_from desc, valid_to, orig_city
+
+---------------------------------------------------------------------------------------------------
+
 
 if object_id('tempdb..##preparePopulateMSharp') is not null drop table ##preparePopulateMSharp
 if object_id('tempdb..##overriden') is not null drop table ##overriden
-
 
 
 ------------------- [REFINE Source Rate for MSharp Rate Population] -------------------------------
@@ -57,7 +101,8 @@ begin
 declare @selectFreight nvarchar(max) = N'
 if object_id(''tempdb..#forRank'') is not null drop table #forRank
 SELECT distinct
-max([version]) as [version], valid_from , valid_to, rate_code, orig_city, orig_country_code,
+max([version_num]) as [version], 
+valid_from, valid_to, rate_code, orig_city, orig_country_code,
 dest_city, dest_country_code, equipment_load_size, rate, currency, rate_base_uom as [uom], 
 [minimum] = 
 		case when minimum_charge = ''0'' then ''''
@@ -73,6 +118,9 @@ where
 group by
 	valid_from, valid_to, rate_code, orig_city, orig_country_code, dest_city, dest_country_code,
 	equipment_load_size, rate, currency, rate_base_uom, minimum_charge, rate_type
+
+
+--select * from #forRank
 
 
 ------------------- [DISPLAY FREIGHT RATE] [RANK PARTITION] ---------------------------------------
@@ -494,7 +542,7 @@ if(@cat = 'Accessorial' and @accgroup = 'Others2')
 	begin exec sp_executesql @selectOthers2Acc end
 
 
-------------------- [ROWS NOT FOR POPULATED | WITH ISSUE/s] ---------------------------------------
+------------------- [ROWS NOT POPULATED | WITH ISSUE/s] -------------------------------------------
 ---------------------------------------------------------------------------------------------------
 if object_id('tempdb..#notPopulated_withIssue') is not null drop table #notPopulated_withIssue
 select * into #notPopulated_withIssue from ##preparePopulateMSharp
@@ -768,6 +816,7 @@ end
 
 
 
+--be sure to execute below drop tables when altering the sproc.
 
 if object_id('tempdb..##preparePopulateMSharp') is not null drop table ##preparePopulateMSharp
 if object_id('tempdb..##overriden') is not null drop table ##overriden

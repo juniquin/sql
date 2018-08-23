@@ -23,14 +23,32 @@ rate.GSK_KN_AIR_OCEAN_MASTER_RATES
 group by Mode, port_to_port_rate_uom
 order by mode
 
-
+if object_id('tempdb..#grtraw') is not null drop table #grtraw
 
 select *
+into #grtraw
 from 
 rate.GSK_KN_AIR_OCEAN_MASTER_RATES
 WHERE
 trax_filename like '%v169%'
---and rate_code = 'K52914'
+
+--and 
+rate_code = 'K25283'
+
+
+select distinct try_parse(valid_from as date using 'en-gb'), valid_from,
+	 [TEST] = 
+		case	when try_parse(valid_from as date using 'en-gb') < '2018-08-01' then 'valid_from < 8/1'
+				when try_parse(valid_from as date using 'en-gb') >='2018-08-01' then 'valid_from >= 8/1'
+				when try_parse(valid_from as date using 'en-gb') ='2018-08-01' then 'valid_from = 8/1'
+			end, 
+			*	
+from #grtraw
+where
+status = 'ACTIVE' 
+and NOT (try_parse(valid_from as date using 'en-gb') < '2018-08-01')
+order by trax_created desc
+
 
 
 /*
