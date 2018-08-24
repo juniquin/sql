@@ -85,7 +85,7 @@ set valid_to = case	when [version_num] < 2018169 and try_parse(valid_to as date 
 
 --select * from #newrates
 --order by  
-	--rate_code, [version_year] desc, [version_sequence] desc, [version] desc, valid_from desc, valid_to, orig_city
+--	rate_code, [version_year] desc, [version_sequence] desc, [version] desc, valid_from desc, valid_to, orig_city
 
 ---------------------------------------------------------------------------------------------------
 
@@ -165,7 +165,7 @@ declare @selectOrigAcc nvarchar(max) = N'
 ---------------------------------------------------------------------------------------------------
 if object_id(''tempdb..#OrigAccRawUnpivot'') is not null drop table #OrigAccRawUnpivot
 select distinct
-	max([version]) as [version], valid_from, valid_to, rate_code, orig_city, orig_country_code,
+	max([version_num]) as [version], valid_from, valid_to, rate_code, orig_city, orig_country_code,
 	dest_city, dest_country_code,
 	equipment_load_size, charge_code, rate, currency, puc_uom, atf_uom, atv_uom,
 	uom = 
@@ -264,7 +264,7 @@ declare @selectDestAcc nvarchar(max) = N'
 ---------------------------------------------------------------------------------------------------
 if object_id(''tempdb..#DestAccRawUnpivot'') is not null drop table #DestAccRawUnpivot
 select distinct
-	max([version]) as [version], valid_from, valid_to, rate_code, orig_city, orig_country_code, dest_city, dest_country_code, equipment_load_size,
+	max([version_num]) as [version], valid_from, valid_to, rate_code, orig_city, orig_country_code, dest_city, dest_country_code, equipment_load_size,
 	charge_code, rate, currency, dnt_uom, dnf_uom, dnv_uom, dns_uom, doh_uom, [240_uom],
 	uom = 
 		case when charge_code = ''DNT'' then dnt_uom
@@ -362,7 +362,7 @@ declare @selectOthers1Acc nvarchar(max) = N'
 ---------------------------------------------------------------------------------------------------
 if object_id(''tempdb..#Others1AccRawUnpivot'') is not null drop table #Others1AccRawUnpivot
 select distinct
-	max([version]) as [version], valid_from, valid_to, rate_code, orig_city, orig_country_code, dest_city, dest_country_code, equipment_load_size,
+	max([version_num]) as [version], valid_from, valid_to, rate_code, orig_city, orig_country_code, dest_city, dest_country_code, equipment_load_size,
 	charge_code, rate, currency, [470_uom], [762_uom], cf1_uom,
 	uom = 
 		case when charge_code = ''470'' then [470_uom]
@@ -449,7 +449,7 @@ declare @selectOthers2Acc nvarchar(max) = N'
 ---------------------------------------------------------------------------------------------------
 if object_id(''tempdb..#Others2AccRawUnpivot'') is not null drop table #Others2AccRawUnpivot
 select distinct
-	max([version]) as [version], valid_from, valid_to, rate_code, orig_city, orig_country_code, dest_city, dest_country_code, equipment_load_size,
+	max([version_num]) as [version], valid_from, valid_to, rate_code, orig_city, orig_country_code, dest_city, dest_country_code, equipment_load_size,
 	charge_code, rate, currency, CRS_uom, PKL_uom, SRG_uom,
 	uom = 
 		case when charge_code = ''CRS'' then CRS_uom
