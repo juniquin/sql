@@ -14,8 +14,24 @@ select count(*) as [Count] from rate.GSK_KN_AIR_OCEAN_MASTER_RATES with (nolock)
 select distinct trax_filename, count(*) as [count]
 from 
 rate.GSK_KN_AIR_OCEAN_MASTER_RATES
+where
+--trax_filename in ('GSK K+N Air - Ocean Rate Table Elavon 2019 V001.xlsx','GSK K+N Air - Ocean Rate Table Elavon 2019 V234.xlsx')
+trax_filename like '%2020%'
 group by trax_filename
 order by 1
+
+
+--as discussed with Loued V., GSK K+N Air - Ocean Rate Table Elavon 2019 V234.xlsx to be updated as V233 
+--and GSK K+N Air - Ocean Rate Table Elavon 2019 V001.xlsx is to be updated to v234
+--SUP-168947
+
+--begin tran
+--update rate.GSK_KN_AIR_OCEAN_MASTER_RATES
+--set trax_filename = 'GSK K+N Air - Ocean Rate Table Elavon 2019 V234.xlsx'
+--where
+--trax_filename = 'GSK K+N Air - Ocean Rate Table Elavon 2019 V001.xlsx'
+
+--commit tran
 
 select distinct Mode, port_to_port_rate_uom, count(*) as [count] 
 from 
@@ -30,7 +46,7 @@ into #grtraw
 from 
 rate.GSK_KN_AIR_OCEAN_MASTER_RATES
 WHERE
-trax_filename like '%v169%'
+trax_filename like '%00%'
 
 --and 
 rate_code = 'K25283'
@@ -73,6 +89,6 @@ select DISTINCT * from rate.GSK_KN_AIR_OCEAN_MASTER_RATES
 where
 --trax_filename = 'GSK K+N Air - Ocean Rate Table Elavon 2017 V57 (1).xlsx'
 --and 
-rate_code = 'K60064'
-
+rate_code = 'K63402'
+order by 2 desc
 
