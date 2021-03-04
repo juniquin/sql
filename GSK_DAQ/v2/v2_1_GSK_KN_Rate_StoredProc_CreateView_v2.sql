@@ -50,7 +50,7 @@ set @query = N'CREATE VIEW rate.vw_GSK_KN_SourceRates_Temp_v2
 				 when [trax_filename] like ''%2020%''
 				then replace(substring([trax_filename], charindex(''2020'', [trax_filename], 1), len([trax_filename])-(charindex(''2020'', [trax_filename], 1)-1)), ''.xlsx'', '''')
 				 when [trax_filename] like ''%2021%''
-				then replace(substring([trax_filename], charindex(''2021'', [trax_filename], 1), len([trax_filename])-(charindex(''2021'', [trax_filename], 1)-1)), ''.xlsx'', '''')
+				then replace(substring([trax_filename], charindex(''2021'', [trax_filename], 1), len([trax_filename])-(charindex(''2021'', [trax_filename], 1)-1)), ''.xlsx'', '''')		--added 03/04/2021 JQ
 				 when [trax_filename] not like ''%2017%'' and [trax_filename] not like ''%2018%'' and [trax_filename] not like ''%2019%'' and [trax_filename] not like ''%2020%''and [trax_filename] not like ''%2021%''
 				then concat(''2016'', replace(substring([trax_filename], charindex('' V'', [trax_filename], 1), len([trax_filename])-(charindex(''Elavon'', [trax_filename], 1)-1)), ''.xlsx'', ''''))
 			end,
